@@ -31,5 +31,14 @@ class AboutDevelopersActivity : Activity() {
             val intent = Intent(this, LandingActivity::class.java)
             startActivity(intent)
         }
+
+        val btn_profile = findViewById<LinearLayout>(R.id.btn_profile)
+        btn_profile.setOnClickListener {
+            Log.e("Home button clicked", "Button is Clicked!")
+            this.toast("Button is Clicked!")
+
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

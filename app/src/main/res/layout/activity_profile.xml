@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:background="#ac79e2"
+        android:textColor="#45246b"
+        android:paddingLeft="10dp"
+        android:text="TeleFlow"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape2"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/user_icon128"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="25dp"
+            android:text="Username:"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/user_name"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="Name"
+            android:textColor="#45246b"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="25dp"
+            android:text="Email:"
+            android:textSize="20sp"/>
+
+
+        <TextView
+            android:id="@+id/user_email"
+            android:gravity="center_vertical"
+            android:textColor="#45246b"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="Email"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+
+        <TextView
+            android:id="@+id/edit_profile"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="60dp"
+            android:text="Edit Profile"
+            android:textColor="#0f0c13"
+            android:textStyle="bold"
+            android:textSize="24sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+
+        <TextView
+            android:id="@+id/logout_button"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Logout"
+            android:textColor="#0f0c13"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

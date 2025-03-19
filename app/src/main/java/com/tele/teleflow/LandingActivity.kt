@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.tele.teleflow.utils.toast
 
 class LandingActivity : Activity() {
@@ -28,6 +29,15 @@ class LandingActivity : Activity() {
             this.toast("Button is Clicked!")
 
             val intent = Intent(this, LandingActivity::class.java)
+            startActivity(intent)
+        }
+
+        val btn_profile = findViewById<LinearLayout>(R.id.btn_profile)
+        btn_profile.setOnClickListener {
+            Log.e("Profile button clicked", "Button is Clicked!")
+            this.toast("Button is Clicked!")
+
+            val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
 
