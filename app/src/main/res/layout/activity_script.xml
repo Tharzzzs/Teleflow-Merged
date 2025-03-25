@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="TeleFlow"
+            android:text="Scripts"
             android:textColor="@color/white"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -42,88 +42,35 @@
         android:orientation="vertical"
         android:paddingHorizontal="24dp">
 
-        <!-- Recent Scripts Section -->
+        <!-- Scripts Section -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginBottom="5dp"
-            android:text="Recent Scripts"
+            android:text="My Scripts"
             android:textColor="@color/background_color"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <ListView
-            android:id="@+id/recent_scripts_list"
+            android:id="@+id/scripts_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:divider="@null"
             android:dividerHeight="8dp"
             android:scrollbars="none"
             android:clipToPadding="false"
             android:paddingHorizontal="8dp"/>
 
-        <!-- My Recordings Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="My Recordings"
-            android:textColor="@color/background_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:weightSum="4">
-
-            <ImageView
-                android:layout_width="110dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/card_shape"
-                android:scaleType="centerCrop"
-                android:src="@drawable/video_placeholder1" />
-
-            <ImageView
-                android:layout_width="110dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/card_shape"
-                android:scaleType="centerCrop"
-                android:src="@drawable/video_placeholder2" />
-
-            <ImageView
-                android:layout_width="110dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:background="@drawable/card_shape"
-                android:scaleType="centerCrop"
-                android:src="@drawable/video_placeholder3" />
-        </LinearLayout>
-
-        <!-- Horizontal Line -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="-30dp"
-            android:background="@android:color/darker_gray" />
-
         <!-- Create Script Button -->
         <Button
+            android:id="@+id/btn_create_script"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/button_background"
             android:text="CREATE SCRIPT"
             android:textAllCaps="true"
@@ -136,4 +83,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-</LinearLayout>
+</LinearLayout> 

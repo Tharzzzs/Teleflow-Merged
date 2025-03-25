@@ -20,12 +20,6 @@ class LandingActivity : Activity() {
             "YouTube Intro",
             "Podcast Episode 3"
         )
-        
-        val scriptDates = listOf(
-            "Last edited: 2 hours ago",
-            "Last edited: Yesterday",
-            "Last edited: 3 days ago"
-        )
 
         // Setup ListView with adapter
         val listView = findViewById<ListView>(R.id.recent_scripts_list)
@@ -34,9 +28,7 @@ class LandingActivity : Activity() {
             R.layout.simple_list_item,
             android.R.id.text1,
             scriptTitles
-        ).apply {
-            setDropDownViewResource(R.layout.simple_list_item)
-        }
+        )
         
         listView.adapter = adapter
 
@@ -56,7 +48,12 @@ class LandingActivity : Activity() {
         // Navigation bar click listeners
         findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
             toast("Button is Clicked!")
-            startActivity(Intent(this, LandingActivity::class.java))
+            // We're already in the home screen
+        }
+
+        findViewById<LinearLayout>(R.id.btn_script).setOnClickListener {
+            toast("Button is Clicked!")
+            startActivity(Intent(this, ScriptActivity::class.java))
         }
 
         findViewById<LinearLayout>(R.id.btn_profile).setOnClickListener {

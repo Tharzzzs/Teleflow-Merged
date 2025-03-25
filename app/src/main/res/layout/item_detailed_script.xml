@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/card_shape"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="8dp">
+
+    <!-- Script Icon -->
+    <ImageView
+        android:id="@+id/script_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/sc"
+        android:layout_marginEnd="12dp"/>
+
+    <!-- Script Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_script_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Pitch"
+            android:textColor="@color/primary_color"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/text_script_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last edited: 2 hours ago"
+            android:textColor="@color/description_color"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <!-- Bookmark Button -->
+    <ImageButton
+        android:id="@+id/btn_bookmark"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/bookmark_unclicked"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:padding="4dp"
+        android:layout_marginStart="12dp"/>
+
+</LinearLayout> 
