@@ -5,7 +5,8 @@
     android:orientation="horizontal"
     android:background="#ac79e2"
     android:elevation="8dp"
-    android:paddingVertical="8dp">
+    android:paddingVertical="8dp"
+    android:layout_gravity="bottom">
     <!-- Home -->
     <LinearLayout
         android:id="@+id/btn_home"

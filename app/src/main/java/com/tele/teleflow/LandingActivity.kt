@@ -3,9 +3,9 @@ package com.tele.teleflow
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.ImageButton
-import android.widget.ImageView
+import android.widget.ListView
 import android.widget.LinearLayout
 import com.tele.teleflow.utils.toast
 
@@ -14,32 +14,54 @@ class LandingActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_landing)
 
-        val btn_settings = findViewById<ImageButton>(R.id.btn_settings)
-        btn_settings.setOnClickListener {
-            Log.e("Settings button clicked", "Button is Clicked!")
-            this.toast("Button is Clicked!") // 02/26/2024 (changed to toast function from utils instead of makeText() method from Toast class)
+        // Sample data for recent scripts
+        val scriptTitles = listOf(
+            "Project Pitch",
+            "YouTube Intro",
+            "Podcast Episode 3"
+        )
+        
+        val scriptDates = listOf(
+            "Last edited: 2 hours ago",
+            "Last edited: Yesterday",
+            "Last edited: 3 days ago"
+        )
 
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+        // Setup ListView with adapter
+        val listView = findViewById<ListView>(R.id.recent_scripts_list)
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.simple_list_item,
+            android.R.id.text1,
+            scriptTitles
+        ).apply {
+            setDropDownViewResource(R.layout.simple_list_item)
+        }
+        
+        listView.adapter = adapter
+
+        // Set click listener for script items
+        listView.setOnItemClickListener { _, _, position, _ ->
+            toast("Selected: ${scriptTitles[position]}")
+            // TODO: Navigate to script editor
         }
 
-        val btn_home = findViewById<ImageView>(R.id.btn_home)
-        btn_home.setOnClickListener {
-            Log.e("Home button clicked", "Button is Clicked!")
-            this.toast("Button is Clicked!")
-
-            val intent = Intent(this, LandingActivity::class.java)
-            startActivity(intent)
+        // Settings button click listener
+        val settingsButton = findViewById<ImageButton>(R.id.btn_settings)
+        settingsButton.setOnClickListener {
+            toast("Button is Clicked!")
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        val btn_profile = findViewById<LinearLayout>(R.id.btn_profile)
-        btn_profile.setOnClickListener {
-            Log.e("Profile button clicked", "Button is Clicked!")
-            this.toast("Button is Clicked!")
-
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
+        // Navigation bar click listeners
+        findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
+            toast("Button is Clicked!")
+            startActivity(Intent(this, LandingActivity::class.java))
         }
 
+        findViewById<LinearLayout>(R.id.btn_profile).setOnClickListener {
+            toast("Button is Clicked!")
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
 }

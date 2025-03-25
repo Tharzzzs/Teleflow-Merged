@@ -37,7 +37,8 @@
     <!-- Content with Padding -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:paddingHorizontal="24dp">
 
@@ -52,86 +53,16 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/recent_scripts_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:orientation="vertical">
-
-            <!-- Script Card 1 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/card_shape"
-                android:padding="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Project Pitch"
-                    android:textColor="@color/primary_color"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last edited: 2 hours ago"
-                    android:textColor="@color/description_color"
-                    android:textSize="12sp"/>
-            </LinearLayout>
-
-            <!-- Script Card 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/card_shape"
-                android:padding="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="YouTube Intro"
-                    android:textColor="@color/primary_color"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last edited: Yesterday"
-                    android:textColor="@color/description_color"
-                    android:textSize="12sp"/>
-            </LinearLayout>
-
-            <!-- Script Card 3 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/card_shape"
-                android:padding="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Podcast Episode 3"
-                    android:textColor="@color/primary_color"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last edited: 3 days ago"
-                    android:textColor="@color/description_color"
-                    android:textSize="12sp"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:divider="@null"
+            android:dividerHeight="8dp"
+            android:scrollbars="none"
+            android:clipToPadding="false"
+            android:paddingHorizontal="8dp"/>
 
         <!-- My Videos Section -->
         <TextView
@@ -199,88 +130,10 @@
             android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <LinearLayout
+    <!-- Navigation Bar -->
+    <include
+        layout="@layout/nav_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-0dp"
-        android:elevation="8dp"
-        android:background="@drawable/top_border"
-        android:padding="8dp"
-        >
-
-        <!-- Home -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:id="@+id/btn_home"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/home_icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- Script -->
-        <LinearLayout
-            android:id="@+id/btn_script"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/script_icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Script"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- Profile -->
-        <LinearLayout
-            android:id="@+id/btn_profile"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="true"
-            >
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/profile_icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-    </LinearLayout>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
