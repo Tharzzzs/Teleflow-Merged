@@ -3,42 +3,33 @@ package com.tele.teleflow
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import com.tele.teleflow.utils.toast
 
 class AboutDevelopersActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_developers)
 
-
-        val btn_back = findViewById<ImageButton>(R.id.btn_back)
-        btn_back.setOnClickListener {
-            Log.e("Back button clicked", "Button is Clicked!")
-            this.toast("Button is Clicked!")
-
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+        // Back button
+        findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
+            finish()
         }
 
-        val btn_home = findViewById<LinearLayout>(R.id.btn_home)
-        btn_home.setOnClickListener {
-            Log.e("Home button clicked", "Button is Clicked!")
-            this.toast("Button is Clicked!")
-
-            val intent = Intent(this, LandingActivity::class.java)
-            startActivity(intent)
+        // Navigation bar setup
+        findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
+            startActivity(Intent(this, LandingActivity::class.java))
+            finish()
         }
 
-        val btn_profile = findViewById<LinearLayout>(R.id.btn_profile)
-        btn_profile.setOnClickListener {
-            Log.e("Home button clicked", "Button is Clicked!")
-            this.toast("Button is Clicked!")
+        findViewById<LinearLayout>(R.id.btn_script).setOnClickListener {
+            startActivity(Intent(this, ScriptActivity::class.java))
+            finish()
+        }
 
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
+        findViewById<LinearLayout>(R.id.btn_profile).setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
         }
     }
 }

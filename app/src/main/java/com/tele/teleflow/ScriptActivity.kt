@@ -20,7 +20,6 @@ class ScriptActivity : Activity(), ScriptAdapter.OnBookmarkClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_script)
 
-        // Sample data
         scripts.addAll(listOf(
             Script("Project Pitch", "2 hours ago"),
             Script("Meeting Notes", "Yesterday"),
@@ -28,24 +27,20 @@ class ScriptActivity : Activity(), ScriptAdapter.OnBookmarkClickListener {
             Script("Team Update", "1 week ago")
         ))
 
-        // Setup ListView with custom adapter
         val listView = findViewById<ListView>(R.id.scripts_list)
         scriptAdapter = ScriptAdapter(this, scripts)
         scriptAdapter.bookmarkClickListener = this
         listView.adapter = scriptAdapter
 
-        // Handle list item clicks
         listView.setOnItemClickListener { _, _, position, _ ->
             val script = scripts[position]
             Toast.makeText(this, "Selected: ${script.title}", Toast.LENGTH_SHORT).show()
         }
 
-        // Settings button click listener
         findViewById<ImageButton>(R.id.btn_settings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        // Create script button click listener
         findViewById<Button>(R.id.btn_create_script).setOnClickListener {
             Toast.makeText(this, "Create new script", Toast.LENGTH_SHORT).show()
         }

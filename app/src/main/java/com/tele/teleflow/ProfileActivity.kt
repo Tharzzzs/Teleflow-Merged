@@ -19,21 +19,25 @@ class ProfileActivity : Activity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var logoutButton: TextView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        initializeViews()
+        setupClickListeners()
+        loadProfileData()
+    }
+
+    private fun initializeViews() {
         profilePicture = findViewById(R.id.profile_picture)
         userNameTextView = findViewById(R.id.user_name)
         userEmailTextView = findViewById(R.id.user_email)
         logoutButton = findViewById(R.id.logout_button)
-
-
         sharedPreferences = getSharedPreferences("User Profile", Context.MODE_PRIVATE)
+    }
 
-        loadProfileData()
-
+    private fun setupClickListeners() {
+        // Logout button
         logoutButton.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Logout")
@@ -48,16 +52,25 @@ class ProfileActivity : Activity() {
                 .show()
         }
 
-        val editProfile = findViewById<TextView>(R.id.edit_profile)
-        editProfile.setOnClickListener {
+        // Edit profile button
+        findViewById<TextView>(R.id.edit_profile).setOnClickListener {
             startActivity(Intent(this, ProfilePageActivity::class.java))
         }
 
-        val goToHome = findViewById<LinearLayout>(R.id.btn_home)
-        goToHome.setOnClickListener {
+        // Navigation bar setup
+        findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
             startActivity(Intent(this, LandingActivity::class.java))
+            finish()
         }
 
+        findViewById<LinearLayout>(R.id.btn_script).setOnClickListener {
+            startActivity(Intent(this, ScriptActivity::class.java))
+            finish()
+        }
+
+        findViewById<LinearLayout>(R.id.btn_profile).setOnClickListener {
+            // We're already in the profile screen
+        }
     }
 
     override fun onResume() {
@@ -72,6 +85,4 @@ class ProfileActivity : Activity() {
         userNameTextView.text = savedUserName
         userEmailTextView.text = savedUserEmail
     }
-
-
 }

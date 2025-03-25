@@ -14,14 +14,12 @@ class LandingActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_landing)
 
-        // Sample data for recent scripts
         val scriptTitles = listOf(
             "Project Pitch",
             "YouTube Intro",
             "Podcast Episode 3"
         )
 
-        // Setup ListView with adapter
         val listView = findViewById<ListView>(R.id.recent_scripts_list)
         val adapter = ArrayAdapter(
             this,
@@ -32,20 +30,16 @@ class LandingActivity : Activity() {
         
         listView.adapter = adapter
 
-        // Set click listener for script items
         listView.setOnItemClickListener { _, _, position, _ ->
             toast("Selected: ${scriptTitles[position]}")
-            // TODO: Navigate to script editor
         }
 
-        // Settings button click listener
         val settingsButton = findViewById<ImageButton>(R.id.btn_settings)
         settingsButton.setOnClickListener {
             toast("Button is Clicked!")
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        // Navigation bar click listeners
         findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
             toast("Button is Clicked!")
             // We're already in the home screen

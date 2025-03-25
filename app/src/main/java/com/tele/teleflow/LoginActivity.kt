@@ -11,64 +11,95 @@ import android.widget.EditText
 import android.widget.Toast
 
 class LoginActivity : Activity() {
+    private lateinit var editUsername: EditText
+    private lateinit var editPassword: EditText
+    private lateinit var buttonLogin: Button
+    private lateinit var buttonRegister: Button
+    
+    // Store registered credentials
+    private var registeredUsername: String? = null
+    private var registeredPassword: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val editUsername = findViewById<EditText>(R.id.edittext_username)
-        val editPassword = findViewById<EditText>(R.id.edittext_password)
-        val buttonLogin = findViewById<Button>(R.id.button_login)
-        val buttonRegister = findViewById<Button>(R.id.button_register)
+        initializeViews()
+        setupClickListeners()
+        setupTextWatchers()
 
+        intent.getStringExtra("username")?.let { username ->
+            registeredUsername = username
+            editUsername.setText(username)
+            intent.getStringExtra("password")?.let { password ->
+                registeredPassword = password
+                editPassword.setText(password)
+            }
+        }
+    }
+
+    private fun initializeViews() {
+        editUsername = findViewById(R.id.edittext_username)
+        editPassword = findViewById(R.id.edittext_password)
+        buttonLogin = findViewById(R.id.button_login)
+        buttonRegister = findViewById(R.id.button_register)
 
         buttonLogin.isEnabled = false
         buttonRegister.isEnabled = true
+    }
 
+    private fun setupClickListeners() {
+        buttonLogin.setOnClickListener {
+            val username = editUsername.text.toString().trim()
+            val password = editPassword.text.toString().trim()
 
-        fun checkFields() {
-            val isFilled = editUsername.text.toString().trim().isNotEmpty() &&
-                    editPassword.text.toString().trim().isNotEmpty()
-
-            buttonLogin.isEnabled = isFilled
-            buttonRegister.isEnabled = isFilled
+            when {
+                username.isEmpty() -> {
+                    editUsername.error = "Please enter your username"
+                }
+                password.length < 6 -> {
+                    editPassword.error = "Password must be at least 6 characters"
+                }
+                else -> {
+                    if ((username == registeredUsername && password == registeredPassword) || 
+                        (username == "admin" && password == "admin123")) {
+                        Log.d("LoginActivity", "Login Successful")
+                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, LandingActivity::class.java))
+                        finish()
+                    } else {
+                        Log.d("LoginActivity", "Login Failed")
+                        Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
 
+        buttonRegister.setOnClickListener {
+            Log.d("LoginActivity", "Register Button Clicked")
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+    }
 
+    private fun setupTextWatchers() {
         val textWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                checkFields()
+                validateFields()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
 
         editUsername.addTextChangedListener(textWatcher)
         editPassword.addTextChangedListener(textWatcher)
+    }
 
-
-        buttonLogin.setOnClickListener {
-            val username = editUsername.text.toString().trim()
-            val password = editPassword.text.toString().trim()
-
-            if (username == "Myron" && password == "123") {
-                Log.e("LoginActivity", "Login Successful")
-                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LandingActivity::class.java))
-                finish()
-            } else {
-                Log.e("LoginActivity", "Login Failed")
-                Toast.makeText(this, "Invalid Username or Password", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-
-        buttonRegister.setOnClickListener {
-            Log.e("LoginActivity", "Register Button Clicked")
-            Toast.makeText(this, "Opening Registration...", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, RegisterActivity::class.java))
-        }
+    private fun validateFields() {
+        val username = editUsername.text.toString().trim()
+        val password = editPassword.text.toString().trim()
+        
+        buttonLogin.isEnabled = username.isNotEmpty() && password.isNotEmpty()
     }
 }
 
