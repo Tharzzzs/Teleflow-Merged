@@ -7,9 +7,9 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ListView
-import android.widget.Toast
 import com.tele.teleflow.adapters.ScriptAdapter
 import com.tele.teleflow.data.Script
+import com.tele.teleflow.utils.toast
 
 class ScriptActivity : Activity(), ScriptAdapter.OnBookmarkClickListener {
 
@@ -34,7 +34,7 @@ class ScriptActivity : Activity(), ScriptAdapter.OnBookmarkClickListener {
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val script = scripts[position]
-            Toast.makeText(this, "Selected: ${script.title}", Toast.LENGTH_SHORT).show()
+            toast("Selected: ${script.title}")
         }
 
         findViewById<ImageButton>(R.id.btn_settings).setOnClickListener {
@@ -42,7 +42,7 @@ class ScriptActivity : Activity(), ScriptAdapter.OnBookmarkClickListener {
         }
 
         findViewById<Button>(R.id.btn_create_script).setOnClickListener {
-            Toast.makeText(this, "Create new script", Toast.LENGTH_SHORT).show()
+            toast("Create new script")
         }
 
         // Navigation bar setup
@@ -51,19 +51,15 @@ class ScriptActivity : Activity(), ScriptAdapter.OnBookmarkClickListener {
         }
 
         findViewById<LinearLayout>(R.id.btn_script).setOnClickListener {
-            // We're already in the script screen
         }
 
         findViewById<LinearLayout>(R.id.btn_profile).setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
         }
     }
 
     override fun onBookmarkClick(position: Int, script: Script) {
-        Toast.makeText(
-            this,
-            "${script.title} ${if (script.isBookmarked) "bookmarked" else "unbookmarked"}",
-            Toast.LENGTH_SHORT
-        ).show()
+        toast("${script.title} ${if (script.isBookmarked) "bookmarked" else "unbookmarked"}")
     }
 } 

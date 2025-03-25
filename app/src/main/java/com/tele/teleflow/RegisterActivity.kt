@@ -10,7 +10,7 @@ import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
+import com.tele.teleflow.utils.toast
 
 class RegisterActivity : Activity() {
     private lateinit var editTextUsername: EditText
@@ -48,7 +48,7 @@ class RegisterActivity : Activity() {
         buttonRegister.setOnClickListener {
             if (validateInputs()) {
                 Log.d("RegisterActivity", "Registration Successful")
-                Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show()
+                toast("Registration Successful")
                 
                 // Pass credentials back to login
                 val loginIntent = Intent(this, LoginActivity::class.java)

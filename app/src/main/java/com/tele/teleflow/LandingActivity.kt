@@ -42,7 +42,6 @@ class LandingActivity : Activity() {
 
         findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
             toast("Button is Clicked!")
-            // We're already in the home screen
         }
 
         findViewById<LinearLayout>(R.id.btn_script).setOnClickListener {

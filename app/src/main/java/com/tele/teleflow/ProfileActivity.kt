@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import com.tele.teleflow.utils.toast
 
 class ProfileActivity : Activity() {
 
@@ -46,7 +46,7 @@ class ProfileActivity : Activity() {
                     val intent = Intent(this, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
-                    Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
+                    toast("Logged out successfully")
                 }
                 .setNegativeButton("No", null)
                 .show()

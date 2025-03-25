@@ -8,7 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
+import com.tele.teleflow.utils.toast
 
 class LoginActivity : Activity() {
     private lateinit var editUsername: EditText
@@ -28,6 +28,7 @@ class LoginActivity : Activity() {
         setupClickListeners()
         setupTextWatchers()
 
+        // Check if we have data from registration and pre-fill fields
         intent.getStringExtra("username")?.let { username ->
             registeredUsername = username
             editUsername.setText(username)
@@ -64,12 +65,12 @@ class LoginActivity : Activity() {
                     if ((username == registeredUsername && password == registeredPassword) || 
                         (username == "admin" && password == "admin123")) {
                         Log.d("LoginActivity", "Login Successful")
-                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+                        toast("Login Successful")
                         startActivity(Intent(this, LandingActivity::class.java))
                         finish()
                     } else {
                         Log.d("LoginActivity", "Login Failed")
-                        Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                        toast("Invalid username or password")
                     }
                 }
             }
