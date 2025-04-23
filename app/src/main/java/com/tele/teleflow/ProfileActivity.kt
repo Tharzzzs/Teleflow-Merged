@@ -16,8 +16,9 @@ class ProfileActivity : Activity() {
     private lateinit var profilePicture: ImageView
     private lateinit var userNameTextView: TextView
     private lateinit var userEmailTextView: TextView
+    private lateinit var editProfileButton: LinearLayout
+    private lateinit var logoutButton: LinearLayout
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var logoutButton: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +33,17 @@ class ProfileActivity : Activity() {
         profilePicture = findViewById(R.id.profile_picture)
         userNameTextView = findViewById(R.id.user_name)
         userEmailTextView = findViewById(R.id.user_email)
+        editProfileButton = findViewById(R.id.edit_profile_button)
         logoutButton = findViewById(R.id.logout_button)
         sharedPreferences = getSharedPreferences("User Profile", Context.MODE_PRIVATE)
     }
 
     private fun setupClickListeners() {
+        // Edit profile button
+        editProfileButton.setOnClickListener {
+            startActivity(Intent(this, ProfilePageActivity::class.java))
+        }
+
         // Logout button
         logoutButton.setOnClickListener {
             AlertDialog.Builder(this)
@@ -50,11 +57,6 @@ class ProfileActivity : Activity() {
                 }
                 .setNegativeButton("No", null)
                 .show()
-        }
-
-        // Edit profile button
-        findViewById<TextView>(R.id.edit_profile).setOnClickListener {
-            startActivity(Intent(this, ProfilePageActivity::class.java))
         }
 
         // Navigation bar setup
