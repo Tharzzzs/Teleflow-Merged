@@ -1,35 +1,43 @@
 package com.tele.teleflow
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tele.teleflow.adapters.DeveloperAdapter
+import com.tele.teleflow.data.Developer
 
-class AboutDevelopersActivity : Activity() {
+class AboutDevelopersActivity : AppCompatActivity() {
+
+    private lateinit var developersRecyclerView: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_developers)
 
-        // Back button
-        findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
+        // Setup toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "About Developers"
+
+        toolbar.setNavigationOnClickListener {
             finish()
         }
 
-        // Navigation bar setup
-        findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
-            startActivity(Intent(this, LandingActivity::class.java))
-            finish()
-        }
+        // Setup developers list
+        developersRecyclerView = findViewById(R.id.developers_list)
+        developersRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        findViewById<LinearLayout>(R.id.btn_script).setOnClickListener {
-            startActivity(Intent(this, ScriptActivity::class.java))
-            finish()
-        }
+        val developers = listOf(
+            Developer("John Doe", "Lead Developer", "john.doe@example.com"),
+            Developer("Jane Smith", "UI/UX Designer", "jane.smith@example.com"),
+            Developer("Alex Johnson", "Backend Developer", "alex.johnson@example.com"),
+            Developer("Sarah Williams", "QA Engineer", "sarah.williams@example.com")
+        )
 
-        findViewById<LinearLayout>(R.id.btn_profile).setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
-            finish()
-        }
+        val adapter = DeveloperAdapter(developers)
+        developersRecyclerView.adapter = adapter
     }
 }

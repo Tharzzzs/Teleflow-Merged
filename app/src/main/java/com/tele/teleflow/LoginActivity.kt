@@ -1,24 +1,30 @@
 package com.tele.teleflow
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import com.tele.teleflow.utils.toast
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.tele.teleflow.repository.AuthRepository
+import kotlinx.coroutines.launch
 
-class LoginActivity : Activity() {
-    private lateinit var editUsername: EditText
-    private lateinit var editPassword: EditText
-    private lateinit var buttonLogin: Button
-    private lateinit var buttonRegister: Button
-    
-    // Store registered credentials
-    private var registeredUsername: String? = null
-    private var registeredPassword: String? = null
+class LoginActivity : AppCompatActivity() {
+    private lateinit var usernameLayout: TextInputLayout
+    private lateinit var passwordLayout: TextInputLayout
+    private lateinit var editUsername: TextInputEditText
+    private lateinit var editPassword: TextInputEditText
+    private lateinit var buttonLogin: MaterialButton
+    private lateinit var buttonRegister: MaterialButton
+    private lateinit var progressView: View
+
+    private val authRepository = AuthRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,50 +33,65 @@ class LoginActivity : Activity() {
         initializeViews()
         setupClickListeners()
         setupTextWatchers()
-
-        // Check if we have data from registration and pre-fill fields
-        intent.getStringExtra("username")?.let { username ->
-            registeredUsername = username
-            editUsername.setText(username)
-            intent.getStringExtra("password")?.let { password ->
-                registeredPassword = password
-                editPassword.setText(password)
-            }
-        }
     }
 
     private fun initializeViews() {
+        usernameLayout = findViewById(R.id.username_layout)
+        passwordLayout = findViewById(R.id.password_layout)
         editUsername = findViewById(R.id.edittext_username)
         editPassword = findViewById(R.id.edittext_password)
         buttonLogin = findViewById(R.id.button_login)
         buttonRegister = findViewById(R.id.button_register)
+        progressView = findViewById(R.id.progress_overlay)
 
         buttonLogin.isEnabled = false
         buttonRegister.isEnabled = true
+        progressView.visibility = View.GONE
     }
 
     private fun setupClickListeners() {
         buttonLogin.setOnClickListener {
-            val username = editUsername.text.toString().trim()
+            val email = editUsername.text.toString().trim()
             val password = editPassword.text.toString().trim()
 
             when {
-                username.isEmpty() -> {
-                    editUsername.error = "Please enter your username"
+                email.isEmpty() -> {
+                    usernameLayout.error = "Please enter your email"
                 }
-                password.length < 6 -> {
-                    editPassword.error = "Password must be at least 6 characters"
+                password.isEmpty() -> {
+                    passwordLayout.error = "Please enter your password"
                 }
                 else -> {
-                    if ((username == registeredUsername && password == registeredPassword) || 
-                        (username == "admin" && password == "admin123")) {
-                        Log.d("LoginActivity", "Login Successful")
-                        toast("Login Successful")
-                        startActivity(Intent(this, LandingActivity::class.java))
-                        finish()
-                    } else {
-                        Log.d("LoginActivity", "Login Failed")
-                        toast("Invalid username or password")
+                    // Show progress
+                    progressView.visibility = View.VISIBLE
+                    buttonLogin.isEnabled = false
+                    buttonRegister.isEnabled = false
+
+                    // Attempt login with Firebase
+                    lifecycleScope.launch {
+                        try {
+                            val result = authRepository.login(email, password)
+
+                            if (result.isSuccess) {
+                                Log.d("LoginActivity", "Login Successful")
+                                showToast("Login Successful")
+                                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                                finish()
+                            } else {
+                                val exception = result.exceptionOrNull()
+                                Log.e("LoginActivity", "Login Failed", exception)
+                                showToast("Login Failed: ${exception?.message ?: "Unknown error"}")
+                                progressView.visibility = View.GONE
+                                buttonLogin.isEnabled = true
+                                buttonRegister.isEnabled = true
+                            }
+                        } catch (e: Exception) {
+                            Log.e("LoginActivity", "Login Exception", e)
+                            showToast("Login Error: ${e.message}")
+                            progressView.visibility = View.GONE
+                            buttonLogin.isEnabled = true
+                            buttonRegister.isEnabled = true
+                        }
                     }
                 }
             }
@@ -97,10 +118,17 @@ class LoginActivity : Activity() {
     }
 
     private fun validateFields() {
-        val username = editUsername.text.toString().trim()
+        val email = editUsername.text.toString().trim()
         val password = editPassword.text.toString().trim()
-        
-        buttonLogin.isEnabled = username.isNotEmpty() && password.isNotEmpty()
+
+        usernameLayout.error = null
+        passwordLayout.error = null
+        buttonLogin.isEnabled = email.isNotEmpty() && password.isNotEmpty()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
+
 

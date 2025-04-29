@@ -1,7 +1,16 @@
 package com.tele.teleflow.data
 
-data class Script(
-    val title: String,
-    val lastEdited: String,
+import java.util.UUID
+
+class Script(
+    var title: String,
+    private val lastEdited: String,
+    var content: String = "",
     var isBookmarked: Boolean = false
-) 
+) {
+    val id: String = UUID.randomUUID().toString()
+
+    fun getLastEditedString(): String {
+        return lastEdited
+    }
+}

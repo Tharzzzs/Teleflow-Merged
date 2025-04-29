@@ -1,24 +1,35 @@
 package com.tele.teleflow
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import com.tele.teleflow.utils.toast
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.tele.teleflow.repository.AuthRepository
+import kotlinx.coroutines.launch
 
-class RegisterActivity : Activity() {
-    private lateinit var editTextUsername: EditText
-    private lateinit var editTextEmail: EditText
-    private lateinit var editTextPassword: EditText
-    private lateinit var editTextConfirmPassword: EditText
-    private lateinit var buttonRegister: Button
-    private lateinit var backButton: TextView
+class RegisterActivity : AppCompatActivity() {
+    private lateinit var usernameLayout: TextInputLayout
+    private lateinit var emailLayout: TextInputLayout
+    private lateinit var passwordLayout: TextInputLayout
+    private lateinit var confirmPasswordLayout: TextInputLayout
+    private lateinit var editTextUsername: TextInputEditText
+    private lateinit var editTextEmail: TextInputEditText
+    private lateinit var editTextPassword: TextInputEditText
+    private lateinit var editTextConfirmPassword: TextInputEditText
+    private lateinit var buttonRegister: MaterialButton
+    private lateinit var buttonBack: MaterialButton
+    private lateinit var progressView: View
+
+    private val authRepository = AuthRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,44 +41,45 @@ class RegisterActivity : Activity() {
     }
 
     private fun initializeViews() {
+        usernameLayout = findViewById(R.id.username_layout)
+        emailLayout = findViewById(R.id.email_layout)
+        passwordLayout = findViewById(R.id.password_layout)
+        confirmPasswordLayout = findViewById(R.id.confirm_password_layout)
         editTextUsername = findViewById(R.id.edittext_username)
         editTextEmail = findViewById(R.id.edittext_email)
         editTextPassword = findViewById(R.id.edittext_password)
         editTextConfirmPassword = findViewById(R.id.edittext_confirm_password)
-        buttonRegister = findViewById(R.id.button_login) // Using the ID from layout
-        backButton = findViewById(R.id.back_button)
-        
+        buttonRegister = findViewById(R.id.button_register)
+        buttonBack = findViewById(R.id.button_back)
+        progressView = findViewById(R.id.progress_overlay)
+
         buttonRegister.isEnabled = false
+        progressView.visibility = View.GONE
     }
 
+    // Implement the missing setupClickListeners method
     private fun setupClickListeners() {
-        backButton.setOnClickListener {
-            finish()
-        }
-
         buttonRegister.setOnClickListener {
             if (validateInputs()) {
-                Log.d("RegisterActivity", "Registration Successful")
-                toast("Registration Successful")
-                
-                // Pass credentials back to login
-                val loginIntent = Intent(this, LoginActivity::class.java)
-                loginIntent.putExtra("username", editTextUsername.text.toString().trim())
-                loginIntent.putExtra("password", editTextPassword.text.toString().trim())
-                startActivity(loginIntent)
-                finish()
+                registerUser()
             }
+        }
+
+        buttonBack.setOnClickListener {
+            finish()
         }
     }
 
+    // Implement the missing setupTextWatchers method
     private fun setupTextWatchers() {
         val textWatcher = object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                validateFields()
-            }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                validateInputsRealTime()
+            }
         }
 
         editTextUsername.addTextChangedListener(textWatcher)
@@ -76,44 +88,84 @@ class RegisterActivity : Activity() {
         editTextConfirmPassword.addTextChangedListener(textWatcher)
     }
 
-    private fun validateFields() {
+    private fun validateInputsRealTime() {
         val username = editTextUsername.text.toString().trim()
         val email = editTextEmail.text.toString().trim()
-        val password = editTextPassword.text.toString().trim()
-        val confirmPassword = editTextConfirmPassword.text.toString().trim()
+        val password = editTextPassword.text.toString()
+        val confirmPassword = editTextConfirmPassword.text.toString()
 
-        buttonRegister.isEnabled = username.isNotEmpty() && email.isNotEmpty() &&
-                password.isNotEmpty() && confirmPassword.isNotEmpty()
+        // Clear previous errors
+        usernameLayout.error = null
+        emailLayout.error = null
+        passwordLayout.error = null
+        confirmPasswordLayout.error = null
+
+        // Enable register button only if all fields are valid
+        buttonRegister.isEnabled = username.isNotEmpty() &&
+                Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
+                password.length >= 6 &&
+                password == confirmPassword
     }
 
     private fun validateInputs(): Boolean {
         val username = editTextUsername.text.toString().trim()
         val email = editTextEmail.text.toString().trim()
-        val password = editTextPassword.text.toString().trim()
-        val confirmPassword = editTextConfirmPassword.text.toString().trim()
+        val password = editTextPassword.text.toString()
+        val confirmPassword = editTextConfirmPassword.text.toString()
 
-        when {
-            username.length < 3 -> {
-                editTextUsername.error = "Username must be at least 3 characters"
-                return false
-            }
-            !isValidEmail(email) -> {
-                editTextEmail.error = "Please enter a valid email address"
-                return false
-            }
-            password.length < 6 -> {
-                editTextPassword.error = "Password must be at least 6 characters"
-                return false
-            }
-            password != confirmPassword -> {
-                editTextConfirmPassword.error = "Passwords do not match"
-                return false
-            }
+        var isValid = true
+
+        if (username.isEmpty()) {
+            usernameLayout.error = "Username is required"
+            isValid = false
         }
-        return true
+
+        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailLayout.error = "Valid email is required"
+            isValid = false
+        }
+
+        if (password.length < 6) {
+            passwordLayout.error = "Password must be at least 6 characters"
+            isValid = false
+        }
+
+        if (password != confirmPassword) {
+            confirmPasswordLayout.error = "Passwords do not match"
+            isValid = false
+        }
+
+        return isValid
     }
 
-    private fun isValidEmail(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun registerUser() {
+        val username = editTextUsername.text.toString().trim()
+        val email = editTextEmail.text.toString().trim()
+        val password = editTextPassword.text.toString()
+
+        showLoading(true)
+
+        lifecycleScope.launch {
+            try {
+                authRepository.registerUser(email, password, username)
+                Toast.makeText(this@RegisterActivity, "Registration successful", Toast.LENGTH_SHORT).show()
+
+                // Navigate to main activity
+                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+            } catch (e: Exception) {
+                Log.e("RegisterActivity", "Registration failed", e)
+                Toast.makeText(this@RegisterActivity, "Registration failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                showLoading(false)
+            }
+        }
+    }
+
+    private fun showLoading(show: Boolean) {
+        progressView.visibility = if (show) View.VISIBLE else View.GONE
+        buttonRegister.isEnabled = !show
+        buttonBack.isEnabled = !show
     }
 }

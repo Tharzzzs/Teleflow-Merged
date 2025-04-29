@@ -1,9 +1,9 @@
 package com.tele.teleflow.utils
 
-import android.app.Activity
-import android.widget.EditText
+import android.content.Context
 import android.widget.Toast
 
-fun Activity.toast(msg:String) {
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+// Extension function for Context (works for both Activity and Fragment via requireContext())
+fun Context.toast(msg: String) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }

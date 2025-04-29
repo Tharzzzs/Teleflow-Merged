@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorSecondaryText">#757575</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="background">#F5F5F5</color>
+    <color name="divider">#EEEEEE</color>
 
-
-    <color name="text_color">#0f0c13</color>
-    <color name="background_color">#19062d</color>
-    <color name="primary_color">#45246b</color>
-    <color name="description_color">#8019062D</color>
-    <color name="secondary_color">#ac79e2</color>
-    <color name="accent_color">#751ad5</color>
-    <color name="light_accent">#f2ecf9</color>
-    <color name="light_background_accent">#FEFDFE</color>
-    <color name="card_color">#f2eff5</color>
-
-
+    <!-- Added missing color resources -->
+    <color name="background_color">@color/white</color>
+    <color name="primary_color">@color/colorPrimary</color>
+    <color name="description_color">@color/colorSecondaryText</color>
+    <color name="card_color">@color/white</color>
+    <color name="light_accent">#FFE0F7FA</color>
 </resources>

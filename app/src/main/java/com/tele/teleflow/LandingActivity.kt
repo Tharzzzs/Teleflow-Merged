@@ -27,7 +27,7 @@ class LandingActivity : Activity() {
             android.R.id.text1,
             scriptTitles
         )
-        
+
         listView.adapter = adapter
 
         listView.setOnItemClickListener { _, _, position, _ ->
