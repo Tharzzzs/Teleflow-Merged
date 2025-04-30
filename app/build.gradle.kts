@@ -61,5 +61,12 @@ dependencies {
 
     // Circle ImageView for profile pictures
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    //Firebasee
     implementation(libs.firebase.common.ktx)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.firebase.database)
 }
