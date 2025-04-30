@@ -1,12 +1,11 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // Make Google Services plugin optional
-    // id("com.google.gms.google-services")
+    id("com.google.gms.google-services") // Enable this for Firebase
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.tele.teleflow"
@@ -19,7 +18,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -46,11 +45,6 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.cardview:cardview:1.0.0")
 
-    // Comment out Firebase dependencies for now
-    // implementation(platform("com.google.firebase:firebase-bom:30.3.1"))
-    // implementation("com.google.firebase:firebase-auth-ktx")
-    // implementation("com.google.firebase:firebase-firestore-ktx")
-    // implementation("com.google.firebase:firebase-storage-ktx")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
