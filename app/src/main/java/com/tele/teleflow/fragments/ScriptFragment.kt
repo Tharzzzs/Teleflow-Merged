@@ -40,8 +40,8 @@ class ScriptFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialize views
-//        loadingView = view.findViewById(R.id.loading_view)
-//        emptyView = view.findViewById(R.id.empty_view)
+        loadingView = view.findViewById(R.id.loading_view)
+        emptyView = view.findViewById(R.id.empty_view)
 
         // Setup RecyclerView
         scriptsRecyclerView = view.findViewById(R.id.scripts_recycler)

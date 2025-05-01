@@ -27,7 +27,7 @@ class ScriptRepository {
 
                 Script(title, lastEdited, content, isBookmarked).apply {
                     // Use the document ID as the script ID
-                    val script = this
+                    id = document.id
                 }
             } else {
                 null
@@ -59,26 +59,98 @@ class ScriptRepository {
         scriptsCollection.document(script.id).update(scriptData as Map<String, Any>).await()
     }
 
-    suspend fun deleteScript(scriptId: String) {
-        scriptsCollection.document(scriptId).delete().await()
+    suspend fun deleteScript(scriptId: String): Result<Boolean> {
+        return try {
+            scriptsCollection.document(scriptId).delete().await()
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    suspend fun getAllScripts(): List<Script> {
+    suspend fun getAllScripts(): Result<List<Script>> {
         return try {
             val snapshot = scriptsCollection.get().await()
-            snapshot.documents.mapNotNull { document ->
+            val scripts = snapshot.documents.mapNotNull { document ->
                 val title = document.getString("title") ?: ""
                 val content = document.getString("content") ?: ""
                 val lastEdited = document.getString("lastEdited") ?: ""
                 val isBookmarked = document.getBoolean("isBookmarked") ?: false
 
                 Script(title, lastEdited, content, isBookmarked).apply {
-                    // Use the document ID as the script ID
-                    val script = this
+                    id = document.id
                 }
             }
+            Result.success(scripts)
         } catch (e: Exception) {
-            emptyList()
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getRecentScripts(): Result<List<Script>> {
+        return try {
+            val snapshot = scriptsCollection
+                .orderBy("lastEdited", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(5)
+                .get()
+                .await()
+
+            val scripts = snapshot.documents.mapNotNull { document ->
+                val title = document.getString("title") ?: ""
+                val content = document.getString("content") ?: ""
+                val lastEdited = document.getString("lastEdited") ?: ""
+                val isBookmarked = document.getBoolean("isBookmarked") ?: false
+
+                Script(title, lastEdited, content, isBookmarked).apply {
+                    id = document.id
+                }
+            }
+            Result.success(scripts)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getBookmarkedScripts(): Result<List<Script>> {
+        return try {
+            val snapshot = scriptsCollection
+                .whereEqualTo("isBookmarked", true)
+                .get()
+                .await()
+
+            val scripts = snapshot.documents.mapNotNull { document ->
+                val title = document.getString("title") ?: ""
+                val content = document.getString("content") ?: ""
+                val lastEdited = document.getString("lastEdited") ?: ""
+                val isBookmarked = document.getBoolean("isBookmarked") ?: true
+
+                Script(title, lastEdited, content, isBookmarked).apply {
+                    id = document.id
+                }
+            }
+            Result.success(scripts)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun toggleBookmark(scriptId: String): Result<Boolean> {
+        return try {
+            // First get the current script to check its bookmark status
+            val scriptDoc = scriptsCollection.document(scriptId).get().await()
+            val currentBookmarkStatus = scriptDoc.getBoolean("isBookmarked") ?: false
+
+            // Toggle the bookmark status
+            val newBookmarkStatus = !currentBookmarkStatus
+
+            // Update the document
+            scriptsCollection.document(scriptId)
+                .update("isBookmarked", newBookmarkStatus)
+                .await()
+
+            Result.success(newBookmarkStatus)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

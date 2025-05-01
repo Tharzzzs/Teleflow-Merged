@@ -8,7 +8,7 @@ class Script(
     var content: String = "",
     var isBookmarked: Boolean = false
 ) {
-    val id: String = UUID.randomUUID().toString()
+    var id: String = UUID.randomUUID().toString()
 
     fun getLastEditedString(): String {
         return lastEdited

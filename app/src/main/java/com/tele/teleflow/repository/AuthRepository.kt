@@ -1,147 +1,125 @@
 package com.tele.teleflow.repository
 
 import android.net.Uri
-import java.util.UUID
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.tasks.await
 
-// Mock implementation for development without Firebase
 class AuthRepository {
-    // Mock user data
-    private var currentUser: MockFirebaseUser? = MockFirebaseUser(
-        uid = "user123",
-        email = "user@example.com",
-        displayName = "Test User"
-    )
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db = FirebaseDatabase.getInstance().getReference("usernames")
 
-    // Register a new user
-    suspend fun registerUser(email: String, password: String, username: String): MockFirebaseUser {
-        // Simulate network delay
-        kotlinx.coroutines.delay(1000)
+    /**
+     * Registers a new user with email, password, and username.
+     * Also updates the Firebase user profile with the username.
+     */
+    suspend fun registerUser(email: String, password: String, username: String): FirebaseUser {
+        // Create user with email and password
+        val result: AuthResult = auth.createUserWithEmailAndPassword(email, password).await()
+        val user = result.user ?: throw Exception("Registration failed: No user returned")
 
-        // Create a mock user
-        currentUser = MockFirebaseUser(
-            uid = UUID.randomUUID().toString(),
-            email = email,
-            displayName = username
-        )
+        // Save username in Realtime Database under UID
+        db.child(user.uid).setValue(username).await()
 
-        return currentUser!!
+        // Optionally update the display name
+        val profileUpdate = UserProfileChangeRequest.Builder()
+            .setDisplayName(username)
+            .build()
+        user.updateProfile(profileUpdate).await()
+
+        return user
     }
 
-    // Get current user
-    suspend fun getCurrentUser(): MockFirebaseUser? {
-        // Simulate network delay
-        kotlinx.coroutines.delay(500)
-        return currentUser
+    /**
+     * Logs in the user using Firebase Authentication.
+     */
+    suspend fun login(email: String, password: String): FirebaseUser {
+        val result = auth.signInWithEmailAndPassword(email, password).await()
+        return result.user ?: throw Exception("Login failed: No user returned")
     }
 
-    // Get user preferences
-    suspend fun getUserPreferences(userId: String): UserPreferences? {
-        // Simulate network delay
-        kotlinx.coroutines.delay(500)
-
-        // Return mock preferences
-        return UserPreferences(
-            pushNotificationsEnabled = true,
-            emailNotificationsEnabled = true,
-            profileVisible = true
-        )
+    /**
+     * Returns the currently authenticated Firebase user, or null if not signed in.
+     */
+    fun getCurrentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 
-    // Upload profile image
-    suspend fun uploadProfileImage(imageUri: Uri): String {
-        // Simulate network delay
-        kotlinx.coroutines.delay(2000)
-
-        // Return a mock URL
-        return "https://example.com/profile_images/${currentUser?.uid}.jpg"
+    /**
+     * Signs the user out.
+     */
+    fun logout() {
+        auth.signOut()
     }
 
-    // Update profile image
-    suspend fun updateProfileImage(imageUrl: String) {
-        // Simulate network delay
-        kotlinx.coroutines.delay(1000)
-
-        // Update mock user
-        currentUser = currentUser?.copy(photoUrl = Uri.parse(imageUrl))
-    }
-
-    // Update username
-    suspend fun updateUsername(newUsername: String) {
-        // Simulate network delay
-        kotlinx.coroutines.delay(1000)
-
-        // Update mock user
-        currentUser = currentUser?.copy(displayName = newUsername)
-    }
-
-    // Update email
-    suspend fun updateEmail(newEmail: String) {
-        // Simulate network delay
-        kotlinx.coroutines.delay(1000)
-
-        // Update mock user
-        currentUser = currentUser?.copy(email = newEmail)
-    }
-
-    // Update password
-    suspend fun updatePassword(newPassword: String) {
-        // Simulate network delay
-        kotlinx.coroutines.delay(1000)
-
-        // Password updated (no actual change in mock)
-    }
-
-    // Update user preference
-    suspend fun updateUserPreference(key: String, value: Boolean) {
-        // Simulate network delay
-        kotlinx.coroutines.delay(500)
-
-        // Preference updated (no actual change in mock)
-    }
-
-    // Delete account
+    /**
+     * Deletes the currently logged-in user's account.
+     */
     suspend fun deleteAccount() {
-        // Simulate network delay
-        kotlinx.coroutines.delay(1500)
-
-        // Clear current user
-        currentUser = null
+        val user = auth.currentUser ?: throw Exception("No user signed in")
+        user.delete().await()
     }
 
-    // Sign out
-    fun signOut() {
-        // Clear current user
-        currentUser = null
+    /**
+     * Updates the display name of the current user.
+     */
+    suspend fun updateUsername(newUsername: String) {
+        val user = auth.currentUser ?: throw Exception("No user signed in")
+        val update = UserProfileChangeRequest.Builder()
+            .setDisplayName(newUsername)
+            .build()
+        user.updateProfile(update).await()
+        db.child(user.uid).setValue(newUsername).await()
     }
 
-    suspend fun login(email: String, password: String): Result<MockFirebaseUser > {
-        // Simulate network delay
-        kotlinx.coroutines.delay(1000)
+    /**
+     * Updates the user's email address.
+     */
+    suspend fun updateEmail(newEmail: String) {
+        val user = auth.currentUser ?: throw Exception("No user signed in")
+        user.updateEmail(newEmail).await()
+    }
 
-        // Check if the email matches the mock user data
-        return if (currentUser ?.email == email) {
-            // Simulate successful login
-            Result.success(currentUser !!)
-        } else {
-            // Simulate login failure
-            Result.failure(Exception("Invalid email or password"))
+    /**
+     * Updates the user's password.
+     */
+    suspend fun updatePassword(newPassword: String) {
+        val user = auth.currentUser ?: throw Exception("No user signed in")
+        user.updatePassword(newPassword).await()
+    }
+
+    /**
+     * Uploads a new profile image URL (if you store URLs manually).
+     * This is placeholder behavior; actual storage should be handled via Firebase Storage.
+     */
+    suspend fun updateProfileImage(imageUrl: String) {
+        val user = auth.currentUser ?: throw Exception("No user signed in")
+        val update = UserProfileChangeRequest.Builder()
+            .setPhotoUri(Uri.parse(imageUrl))
+            .build()
+        user.updateProfile(update).await()
+    }
+
+    suspend fun getUserData(): Result<UserData> {
+        val user = auth.currentUser ?: return Result.failure(Exception("No user logged in"))
+
+        return try {
+            val usernameSnapshot = db.child(user.uid).get().await()
+            val username = usernameSnapshot.getValue(String::class.java) ?: user.displayName ?: "Unknown"
+
+            val userData = UserData(
+                uid = user.uid,
+                username = username,
+                email = user.email ?: "No email",
+                profileImageUrl = user.photoUrl?.toString() ?: "https://example.com/default_profile.jpg"
+            )
+
+            Result.success(userData)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
-
-
 }
-
-// Mock Firebase User class
-data class MockFirebaseUser(
-    val uid: String,
-    val email: String,
-    val displayName: String,
-    val photoUrl: Uri? = null
-)
-
-// User preferences data class
-data class UserPreferences(
-    val pushNotificationsEnabled: Boolean = true,
-    val emailNotificationsEnabled: Boolean = true,
-    val profileVisible: Boolean = true
-)

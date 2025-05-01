@@ -148,20 +148,22 @@ class RegisterActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 authRepository.registerUser(email, password, username)
-                Toast.makeText(this@RegisterActivity, "Registration successful", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RegisterActivity, "Registration successful. Please log in.", Toast.LENGTH_SHORT).show()
 
-                // Navigate to main activity
-                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                // Go back to login screen
+                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()
             } catch (e: Exception) {
                 Log.e("RegisterActivity", "Registration failed", e)
-                Toast.makeText(this@RegisterActivity, "Registration failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RegisterActivity, "Registration failed: ${e.localizedMessage ?: e.message}", Toast.LENGTH_LONG).show()
+
                 showLoading(false)
             }
         }
     }
+
 
     private fun showLoading(show: Boolean) {
         progressView.visibility = if (show) View.VISIBLE else View.GONE

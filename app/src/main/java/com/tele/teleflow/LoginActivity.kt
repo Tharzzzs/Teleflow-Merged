@@ -30,20 +30,27 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        // Initialize views safely
         initializeViews()
+
+        // Setup click listeners
         setupClickListeners()
+
+        // Setup text watchers
         setupTextWatchers()
     }
 
     private fun initializeViews() {
-        usernameLayout = findViewById(R.id.username_layout)
-        passwordLayout = findViewById(R.id.password_layout)
-        editUsername = findViewById(R.id.edittext_username)
-        editPassword = findViewById(R.id.edittext_password)
-        buttonLogin = findViewById(R.id.button_login)
-        buttonRegister = findViewById(R.id.button_register)
-        progressView = findViewById(R.id.progress_overlay)
+        // Safely initialize all views, ensuring they are not null
+        usernameLayout = findViewById(R.id.username_layout) ?: return
+        passwordLayout = findViewById(R.id.password_layout) ?: return
+        editUsername = findViewById(R.id.edittext_username) ?: return
+        editPassword = findViewById(R.id.edittext_password) ?: return
+        buttonLogin = findViewById(R.id.button_login) ?: return
+        buttonRegister = findViewById(R.id.button_register) ?: return
+        progressView = findViewById(R.id.progress_overlay) ?: return
 
+        // Disable login button initially
         buttonLogin.isEnabled = false
         buttonRegister.isEnabled = true
         progressView.visibility = View.GONE
@@ -62,32 +69,29 @@ class LoginActivity : AppCompatActivity() {
                     passwordLayout.error = "Please enter your password"
                 }
                 else -> {
-                    // Show progress
+                    // Show loading state
                     progressView.visibility = View.VISIBLE
                     buttonLogin.isEnabled = false
                     buttonRegister.isEnabled = false
 
-                    // Attempt login with Firebase
                     lifecycleScope.launch {
                         try {
-                            val result = authRepository.login(email, password)
+                            val user = authRepository.login(email, password)
+                            Log.d("LoginActivity", "Login Successful: ${user.email}")
+                            showToast("Login Successful")
 
-                            if (result.isSuccess) {
-                                Log.d("LoginActivity", "Login Successful")
-                                showToast("Login Successful")
-                                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                                finish()
-                            } else {
-                                val exception = result.exceptionOrNull()
-                                Log.e("LoginActivity", "Login Failed", exception)
-                                showToast("Login Failed: ${exception?.message ?: "Unknown error"}")
-                                progressView.visibility = View.GONE
-                                buttonLogin.isEnabled = true
-                                buttonRegister.isEnabled = true
-                            }
+                            // Navigate to MainActivity with proper flags to clear the task stack
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+
+                            // Finish LoginActivity so the user cannot navigate back
+                            finish()
+
                         } catch (e: Exception) {
-                            Log.e("LoginActivity", "Login Exception", e)
-                            showToast("Login Error: ${e.message}")
+                            Log.e("LoginActivity", "Login Failed", e)
+                            showToast("Login Failed: ${e.message}")
+
                             progressView.visibility = View.GONE
                             buttonLogin.isEnabled = true
                             buttonRegister.isEnabled = true
@@ -121,8 +125,11 @@ class LoginActivity : AppCompatActivity() {
         val email = editUsername.text.toString().trim()
         val password = editPassword.text.toString().trim()
 
+        // Reset errors
         usernameLayout.error = null
         passwordLayout.error = null
+
+        // Enable login button only if both fields are not empty
         buttonLogin.isEnabled = email.isNotEmpty() && password.isNotEmpty()
     }
 
@@ -130,5 +137,3 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
-
-

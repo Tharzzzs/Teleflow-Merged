@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -19,7 +18,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
 import com.tele.teleflow.repository.AuthRepository
-import com.tele.teleflow.utils.FirebaseUtils
 import kotlinx.coroutines.launch
 
 class ProfilePageActivity : AppCompatActivity() {
@@ -46,7 +44,7 @@ class ProfilePageActivity : AppCompatActivity() {
             result.data?.data?.let { uri ->
                 selectedImageUri = uri
                 profileImage.setImageURI(uri)
-                uploadProfileImage()
+//                uploadProfileImage()
             }
         }
     }
@@ -56,7 +54,7 @@ class ProfilePageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile_page)
 
         initializeViews()
-        loadUserData()
+//        loadUserData()
         setupClickListeners()
     }
 
@@ -95,38 +93,38 @@ class ProfilePageActivity : AppCompatActivity() {
     }
 
     // Implement the missing loadUserData method
-    private fun loadUserData() {
-        showLoading(true)
-
-        lifecycleScope.launch {
-            try {
-                val currentUser = authRepository.getCurrentUser()
-                if (currentUser != null) {
-                    // Set user data to UI
-                    usernameEditText.setText(currentUser.displayName ?: "")
-                    emailEditText.setText(currentUser.email ?: "")
-
-                    // Load profile image if available
-                    currentUser.photoUrl?.let { url ->
-                        // In a real app, you would use Glide or similar library to load the image
-                        // For now, we'll just log it
-                        Log.d("ProfilePageActivity", "Profile image URL: $url")
-                    }
-
-                    // Load user preferences from Firestore
-                    val userPrefs = authRepository.getUserPreferences(currentUser.uid)
-                    pushNotificationsSwitch.isChecked = userPrefs?.pushNotificationsEnabled ?: true
-                    emailNotificationsSwitch.isChecked = userPrefs?.emailNotificationsEnabled ?: true
-                    profileVisibilitySwitch.isChecked = userPrefs?.profileVisible ?: true
-                }
-            } catch (e: Exception) {
-                Log.e("ProfilePageActivity", "Error loading user data", e)
-                Toast.makeText(this@ProfilePageActivity, "Failed to load user data: ${e.message}", Toast.LENGTH_SHORT).show()
-            } finally {
-                showLoading(false)
-            }
-        }
-    }
+//    private fun loadUserData() {
+//        showLoading(true)
+//
+//        lifecycleScope.launch {
+//            try {
+//                val currentUser = authRepository.getCurrentUser()
+//                if (currentUser != null) {
+//                    // Set user data to UI
+//                    usernameEditText.setText(currentUser.displayName ?: "")
+//                    emailEditText.setText(currentUser.email ?: "")
+//
+//                    // Load profile image if available
+//                    currentUser.photoUrl?.let { url ->
+//                        // In a real app, you would use Glide or similar library to load the image
+//                        // For now, we'll just log it
+//                        Log.d("ProfilePageActivity", "Profile image URL: $url")
+//                    }
+//
+//                    // Load user preferences from Firestore
+//                    val userPrefs = authRepository.getUserPreferences(currentUser.uid)
+//                    pushNotificationsSwitch.isChecked = userPrefs?.pushNotificationsEnabled ?: true
+//                    emailNotificationsSwitch.isChecked = userPrefs?.emailNotificationsEnabled ?: true
+//                    profileVisibilitySwitch.isChecked = userPrefs?.profileVisible ?: true
+//                }
+//            } catch (e: Exception) {
+//                Log.e("ProfilePageActivity", "Error loading user data", e)
+//                Toast.makeText(this@ProfilePageActivity, "Failed to load user data: ${e.message}", Toast.LENGTH_SHORT).show()
+//            } finally {
+//                showLoading(false)
+//            }
+//        }
+//    }
 
     // Implement the missing setupClickListeners method
     private fun setupClickListeners() {
@@ -171,17 +169,17 @@ class ProfilePageActivity : AppCompatActivity() {
         }
 
         // Switch listeners
-        pushNotificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
-            updateUserPreference("pushNotificationsEnabled", isChecked)
-        }
-
-        emailNotificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
-            updateUserPreference("emailNotificationsEnabled", isChecked)
-        }
-
-        profileVisibilitySwitch.setOnCheckedChangeListener { _, isChecked ->
-            updateUserPreference("profileVisible", isChecked)
-        }
+//        pushNotificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+//            updateUserPreference("pushNotificationsEnabled", isChecked)
+//        }
+//
+//        emailNotificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+//            updateUserPreference("emailNotificationsEnabled", isChecked)
+//        }
+//
+//        profileVisibilitySwitch.setOnCheckedChangeListener { _, isChecked ->
+//            updateUserPreference("profileVisible", isChecked)
+//        }
 
         // Delete account button
         findViewById<MaterialButton>(R.id.delete_account_button).setOnClickListener {
@@ -189,24 +187,24 @@ class ProfilePageActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadProfileImage() {
-        selectedImageUri?.let { uri ->
-            showLoading(true)
-
-            lifecycleScope.launch {
-                try {
-                    val downloadUrl = authRepository.uploadProfileImage(uri)
-                    authRepository.updateProfileImage(downloadUrl)
-                    Toast.makeText(this@ProfilePageActivity, "Profile image updated", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Log.e("ProfilePageActivity", "Error uploading profile image", e)
-                    Toast.makeText(this@ProfilePageActivity, "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
-                } finally {
-                    showLoading(false)
-                }
-            }
-        }
-    }
+//    private fun uploadProfileImage() {
+//        selectedImageUri?.let { uri ->
+//            showLoading(true)
+//
+//            lifecycleScope.launch {
+//                try {
+//                    val downloadUrl = authRepository.uploadProfileImage(uri)
+//                    authRepository.updateProfileImage(downloadUrl)
+//                    Toast.makeText(this@ProfilePageActivity, "Profile image updated", Toast.LENGTH_SHORT).show()
+//                } catch (e: Exception) {
+//                    Log.e("ProfilePageActivity", "Error uploading profile image", e)
+//                    Toast.makeText(this@ProfilePageActivity, "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
+//                } finally {
+//                    showLoading(false)
+//                }
+//            }
+//        }
+//    }
 
     private fun updateUsername(newUsername: String) {
         showLoading(true)
@@ -260,16 +258,16 @@ class ProfilePageActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUserPreference(key: String, value: Boolean) {
-        lifecycleScope.launch {
-            try {
-                authRepository.updateUserPreference(key, value)
-            } catch (e: Exception) {
-                Log.e("ProfilePageActivity", "Error updating user preference", e)
-                Toast.makeText(this@ProfilePageActivity, "Failed to update preference: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+//    private fun updateUserPreference(key: String, value: Boolean) {
+//        lifecycleScope.launch {
+//            try {
+//                authRepository.updateUserPreference(key, value)
+//            } catch (e: Exception) {
+//                Log.e("ProfilePageActivity", "Error updating user preference", e)
+//                Toast.makeText(this@ProfilePageActivity, "Failed to update preference: ${e.message}", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
 
     private fun showDeleteAccountConfirmation() {
         AlertDialog.Builder(this)
